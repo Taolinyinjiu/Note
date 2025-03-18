@@ -48,4 +48,6 @@ MQTT客户端可以向服务端发布信息，也可以从服务端收取信息�
 
 刚刚我们在讲解MQTT客户端订阅信息时，使用了用户在视频网站订阅电视剧这个例子。在MQTT通讯中，客户端所订阅的肯定不是一部部电视剧，而是一个个“主题”。MQTT服务端在管理MQTT信息通讯时，就是使用“主题”来控制的。
 
-![Markdown Logo](http://www.taichi-maker.com/wp-content/uploads/2020/09/MQTT%E9%80%9A%E8%AE%AF%E5%AE%9E%E4%BE%8B-1.jpg “MQTT通讯实例")
+如下图所示，在途中，服务器被称为消息代理方，也就是Broker
+
+![在这里插入图片描述](https://typora-1313126608.cos.ap-chengdu.myqcloud.com/bf7dc70cf084e1473c1250997e28101a.png)

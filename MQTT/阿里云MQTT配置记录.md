@@ -6,3 +6,4 @@
 在默认情况下，Arduino会将C盘对应的文档文件夹作为项目的文件夹,库也是安装到这个文件夹下，我们需要先进入到这个文件夹中，找到PubSubClient.h，将其中的MQTT_MAX_PACKET_SIZE的值改成1024，MQTT_KEEPALIVE的值改成60，如果不这样做的话，无法连接上阿里云的MQTT服务器
 
 ### 2.获得MQTT的客户端连接的签名鉴权
+

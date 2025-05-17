@@ -1,0 +1,5 @@
+path: F:/GitHub/Note/毕业设计思路/python_codes
+train: datasets/train/images
+val: datasets/val/images
+nc: 1  # Number of classes
+names: ['bottle']

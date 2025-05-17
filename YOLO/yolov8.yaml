@@ -1,0 +1,4 @@
+train: F:/GitHub/Note/YOLO/dataset/images/train  # 训练集图像路径
+val:   F:/GitHub/Note/YOLO/dataset/images/val    # 验证集图像路径
+nc: 3  # 类别数量
+names: ['mouse', 'earse', 'clean']  # 类别名称列表

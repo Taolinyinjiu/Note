@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>智能包装尺寸识别系统</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+            max-width: 80vw;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: visible;
+        }
+
+        .top-panel {
+            display: flex;
+            height: 90%;
+            border-bottom: 1px solid #eee;
+            z-index: 3000;
+        }
+
+        .left-panel {
+            flex: 0 0 60%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .left-panel h3 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .left-panel h1 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .right-panel {
+            flex: 0 0 40%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .svg-container,
+        .video-container {
+            display: grid;
+            place-items: center;
+        }
+
+        .svg-container {
+            flex: 0 0 45%;
+            height: 45%;
+            padding: 10px;
+            border-bottom: 2px solid #ddd;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-container {
+            flex: 1;
+            height: calc(55% - 12px);
+            padding: 10px;
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .svg-container h1,
+        .video-container h1 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .svg-container p.placeholder,
+        .video-container p.placeholder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+
+        .yolo-image {
+            display: block;
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+        }
+
+        .video-player {
+            display: block;
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+        }
+
+        .bottom-panel {
+            height: 10%;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+            overflow: visible;
+            white-space: nowrap;
+            position: relative;
+            gap: 16px; /* 更紧凑 */
+        }
+
+        .placeholder {
+            color: #999;
+            font-style: italic;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+
+        #my-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 20px 0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #my-button:hover {
+            background-color: #3e8e41;
+        }
+
+        #my-button:active {
+            background-color: #3e8e41;
+            transform: translateY(2px);
+        }
+
+        /* 修改后的自定义下拉菜单样式 */
+        .custom-dropdown {
+            position: relative; /* 让下拉菜单跟随父容器流式排列 */
+            left: 0;
+            top: 0;
+            transform: none;
+            width: 200px;
+            z-index: 3000;
+            margin-right: 10px; /* 可选，增加菜单间距 */
+        }
+
+        .dropdown-toggle {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+            position: relative; /* 确保下拉触发器是定位上下文 */
+            z-index: 3001;
+        }
+
+        .dropdown-toggle:after {
+            content: "";
+            display: inline-block;
+            width: 0.6em;
+            height: 0.6em;
+            border-top: 0.15em solid #666;
+            border-right: 0.15em solid #666;
+            transform: rotate(135deg);
+            margin-left: 0.15em;
+        }
+
+        .dropdown-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            position: fixed ;
+            /* 修改这里，让菜单向上展开 */
+            bottom: 100%;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-bottom: none; /* 修改这里，与触发器连接 */
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+
+        .dropdown-menu.open {
+            display: block;
+            position: absolute;
+            z-index: 3200;
+        }
+
+        .dropdown-menu li {
+            padding: 10px;
+            cursor: pointer;
+            overflow: visible;
+            text-overflow: ellipsis;
+        }
+
+        .dropdown-menu li:hover {
+            background-color: #eee;
+        }
+
+        #selectedYOLOIndex {
+            display: none;
+        }
+
+        #yolo-params {
+            margin-left: 0;
+            white-space: nowrap;
+            overflow: visible;
+            text-overflow: ellipsis;
+            max-width: none;      /* 让它宽度自适应内容 */
+            flex-shrink: 0;       /* 不被压缩 */
+            flex-grow: 0;         /* 不拉伸 */
+            display: flex;        /* 横向排列参数 */
+            align-items: center;
+            gap: 8px;             /* 参数之间间距 */
+        }
+        .yolo-param {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin-right: 5px;
+            font-size: 14px;
+            line-height: 36px; /* 与菜单高度接近 */
+        }
+
+        #yolo-detection-info {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center;">智能包装尺寸识别系统</h1>
+        <div class="top-panel">
+            <div class="left-panel">
+                <h3>USB 摄像头输入图像检测框</h3>
+                <img id="yolo-output" src="{{ url_for('yolo_feed') }}" alt="YOLO Output" class="yolo-image">
+                {% if yolo_error %}
+                    <p id="yolo-error" class="error-message">{{ yolo_error }}</p>
+                {% endif %}
+                <button id="my-button">输出信息</button>
+
+            </div>
+            <div class="right-panel">
+                <div class="svg-container">
+                    <h3>包装盒刀板尺寸图输出框</h3>
+                    {% if svg_content %}
+                        {{ svg_content | safe }}
+                    {% else %}
+                        <p class="placeholder">等待检测结果</p>
+                    {% endif %}
+                </div>
+                <div class="video-container">
+                    <h3>打包盒动态示意图</h3>
+                    {% if video_path %}
+                        <video src="{{ url_for('static', filename=video_path.split('/')[-1]) }}" controls loop
+                            class="video-player"></video>
+                    {% else %}
+                        <p class="placeholder">等待检测结果</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="bottom-panel" id="yolo-results-panel">
+            <div class="custom-dropdown" id="yolo-dropdown">
+                <div class="dropdown-toggle">-- 请选择目标 --</div>
+                <ul class="dropdown-menu"></ul>
+                <input type="hidden" name="selectedYOLOIndex" id="selectedYOLOIndex">
+            </div>
+            <div id="yolo-params" style="margin-left:0px;"></div>
+            <div class="custom-dropdown" id="yolo-multidropdown" style="margin-left:20px;">
+                <div class="dropdown-toggle">多选目标</div>
+                <ul class="dropdown-menu"></ul>
+            </div>
+            <div id="yolo-multi-params" style="margin-left:10px;"></div>
+        </div>
+
+    </div>
+    <!-- 脱离container容器进行测试 -->
+
+    <script>
+        const myButton = document.getElementById('my-button');
+        const yoloParamsPanel = document.getElementById('yolo-params');
+        const yoloDropdown = document.getElementById('yolo-dropdown');
+        const dropdownToggle = yoloDropdown.querySelector('.dropdown-toggle');
+        const dropdownMenu = yoloDropdown.querySelector('.dropdown-menu');
+        const selectedIndexInput = document.getElementById('selectedYOLOIndex');
+        const yoloDetectionInfo = document.getElementById('yolo-detection-info');
+
+        // 多选相关变量
+        const multiDropdown = document.getElementById('yolo-multidropdown');
+        const multiDropdownToggle = multiDropdown.querySelector('.dropdown-toggle');
+        const multiDropdownMenu = multiDropdown.querySelector('.dropdown-menu');
+        const yoloMultiParamsPanel = document.getElementById('yolo-multi-params');
+        let selectedMultiIndexes = [];
+
+        let yoloResults = [];
+
+        function fetchYOLOResults() {
+            fetch('/get_yolo_results')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.yolo_results && Array.isArray(data.yolo_results.objects)) {
+                        yoloResults = data.yolo_results.objects;
+                    } else {
+                        yoloResults = [];
+                        console.error("Error: Unexpected data structure from /get_yolo_results");
+                    }
+                    updateDropdown();
+                    displayYOLOParams(yoloResults);
+                    updateMultiDropdown();
+                    displayMultiYOLOParams([]);
+                })
+                .catch(error => {
+                    console.error('Error fetching YOLO results:', error);
+                    yoloParamsPanel.innerHTML = '<span class="error-message">无法获取 YOLO 结果</span>';
+                    updateDropdown();
+                    updateMultiDropdown();
+                });
+        }
+
+        function updateDropdown() {
+            dropdownMenu.innerHTML = '';
+            let noTargets = true;
+
+            if (yoloResults && yoloResults.length > 0) {
+                yoloResults.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = `${item.class_name} (${item.index})`;
+                    li.setAttribute('data-index', item.index);
+                    dropdownMenu.appendChild(li);
+                    noTargets = false;
+                });
+                dropdownToggle.textContent = '-- 请选择目标 --';
+                selectedIndexInput.value = '';
+            } else {
+                dropdownToggle.textContent = '未检测到目标';
+                selectedIndexInput.value = '';
+            }
+            bindDropdownEvents();
+        }
+
+        function bindDropdownEvents() {
+            const dropdownItems = dropdownMenu.querySelectorAll('li');
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const selectedIndex = this.getAttribute('data-index');
+                    const selectedText = this.textContent;
+                    dropdownToggle.textContent = selectedText;
+                    selectedIndexInput.value = selectedIndex;
+                    dropdownMenu.classList.remove('open');
+                    const selectedResult = yoloResults.find(r => String(r.index) === String(selectedIndex));
+                    displayYOLOParams([selectedResult]);
+                    console.log(`选择了目标索引: ${selectedIndex}`);
+                });
+            });
+            if (!dropdownToggle.hasAttribute('data-toggle-bound')) {
+                dropdownToggle.addEventListener('click', () => {
+                    if (yoloResults && yoloResults.length > 0) {
+                        dropdownMenu.classList.toggle('open');
+                    }
+                });
+                dropdownToggle.setAttribute('data-toggle-bound', 'true');
+            }
+
+            document.addEventListener('click', (event) => {
+                if (!yoloDropdown.contains(event.target)) {
+                    dropdownMenu.classList.remove('open');
+                }
+            });
+        }
+
+        function displayYOLOParams(results) {
+            yoloParamsPanel.innerHTML = '';
+            if (results && results.length > 0 && results[0]) {
+                const result = results[0];
+                const boxWidth = result.box_size ? result.box_size.width : '-';
+                const boxHeight = result.box_size ? result.box_size.height : '-';
+                yoloParamsPanel.innerHTML = `
+                    <span class="yolo-param">类别: ${result.class_name}</span>
+                    <span class="yolo-param">索引: ${result.index}</span>
+                    <span class="yolo-param">置信度: ${result.confidence ? result.confidence.toFixed(2) : '-'}</span>
+                    <span class="yolo-param">长: ${boxWidth}</span>
+                    <span class="yolo-param">宽: ${boxHeight}</span>
+                    <span class="yolo-param">底面积: ${boxWidth * boxHeight}</span>
+                `;
+            } else {
+                yoloParamsPanel.textContent = "暂无";
+            }
+        }
+
+        function updateMultiDropdown() {
+            multiDropdownMenu.innerHTML = '';
+            selectedMultiIndexes = [];
+            if (yoloResults && yoloResults.length > 0) {
+                yoloResults.forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <label style="cursor:pointer;">
+                            <input type="checkbox" class="multi-dropdown-checkbox" data-index="${item.index}">
+                            ${item.class_name} (${item.index})
+                        </label>
+                    `;
+                    multiDropdownMenu.appendChild(li);
+                });
+                multiDropdownToggle.textContent = '多选目标';
+            } else {
+                multiDropdownToggle.textContent = '无可选目标';
+            }
+            bindMultiDropdownEvents();
+        }
+
+        function bindMultiDropdownEvents() {
+            const checkboxes = multiDropdownMenu.querySelectorAll('.multi-dropdown-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const idx = this.getAttribute('data-index');
+                    if (this.checked) {
+                        if (!selectedMultiIndexes.includes(idx)) selectedMultiIndexes.push(idx);
+                    } else {
+                        selectedMultiIndexes = selectedMultiIndexes.filter(i => i !== idx);
+                    }
+                    const selectedResults = yoloResults.filter(r => selectedMultiIndexes.includes(String(r.index)));
+                    displayMultiYOLOParams(selectedResults);
+                    multiDropdownToggle.textContent = selectedMultiIndexes.length > 0 ? `已选${selectedMultiIndexes.length}项` : '多选目标';
+                });
+            });
+
+            if (!multiDropdownToggle.hasAttribute('data-toggle-bound')) {
+                multiDropdownToggle.addEventListener('click', () => {
+                    if (yoloResults && yoloResults.length > 0) {
+                        multiDropdownMenu.classList.toggle('open');
+                    }
+                });
+                multiDropdownToggle.setAttribute('data-toggle-bound', 'true');
+            }
+
+            document.addEventListener('click', (event) => {
+                if (!multiDropdown.contains(event.target)) {
+                    multiDropdownMenu.classList.remove('open');
+                }
+            });
+        }
+
+        function displayMultiYOLOParams(results) {
+            yoloMultiParamsPanel.innerHTML = '';
+            if (results && results.length > 0) {
+                results.forEach(result => {
+                    const boxWidth = result.box_size ? result.box_size.width : '-';
+                    const boxHeight = result.box_size ? result.box_size.height : '-';
+                    yoloMultiParamsPanel.innerHTML += `
+                        <span class="yolo-param">类别: ${result.class_name}</span>
+                        <span class="yolo-param">索引: ${result.index}</span>
+                        <span class="yolo-param">置信度: ${result.confidence ? result.confidence.toFixed(2) : '-'}</span>
+                        <span class="yolo-param">检测框宽: ${boxWidth}</span>
+                        <span class="yolo-param">检测框高: ${boxHeight}</span>
+                        <br>
+                    `;
+                });
+            } else {
+                yoloMultiParamsPanel.textContent = "";
+            }
+        }
+
+        window.onload = function() {
+            fetchYOLOResults();
+        };
+
+        myButton.addEventListener('click', () => {
+            fetchYOLOResults();
+        });
+    </script>
+</body>
+</html>
+``` 

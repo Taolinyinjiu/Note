@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLO 目标选择</title>
+    <style>
+        .custom-dropdown {
+            position: relative;
+            width: 200px;
+            margin: 20px auto;
+        }
+
+        .dropdown-toggle {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between; /* 增加此行，使文本和箭头分开 */
+            align-items: center;             /* 增加此行，使文本和箭头垂直居中 */
+        }
+
+        .dropdown-toggle:after { /* 使用 CSS 生成箭头 */
+            content: "";
+            display: inline-block;
+            width: 0.6em;
+            height: 0.6em;
+            border-top: 0.15em solid #666;  /* 箭头颜色 */
+            border-right: 0.15em solid #666; /* 箭头颜色 */
+            transform: rotate(135deg);
+            margin-left: 0.15em;
+        }
+
+        .dropdown-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-top: none;
+            z-index: 10;
+            display: none; /* Initially hidden */
+            max-height: 200px;  /* 限制最大高度，出现滚动条 */
+            overflow-y: auto;
+        }
+
+        .dropdown-menu.open {
+            display: block;
+        }
+
+        .dropdown-menu li {
+            padding: 10px;
+            cursor: pointer;
+            white-space: nowrap; /* 防止文本折行 */
+            overflow: hidden;      /* 隐藏溢出文本 */
+            text-overflow: ellipsis;    /* 使用省略号 */
+        }
+
+        .dropdown-menu li:hover {
+            background-color: #eee;
+        }
+
+        .selected-index {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        /* 隐藏 input，这里不需要显示 */
+        #selectedYOLOIndex {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="custom-dropdown" id="yolo-dropdown">
+        <div class="dropdown-toggle">-- 请选择目标 --</div>
+        <ul class="dropdown-menu">
+            </ul>
+        <input type="hidden" name="selectedYOLOIndex" id="selectedYOLOIndex">
+    </div>
+
+    <script>
+        const yoloDropdown = document.getElementById('yolo-dropdown');
+        const dropdownToggle = yoloDropdown.querySelector('.dropdown-toggle');
+        const dropdownMenu = yoloDropdown.querySelector('.dropdown-menu');
+        const selectedIndexInput = document.getElementById('selectedYOLOIndex');
+
+        let yoloResults = []; // 用于存储 YOLO 检测结果的全局变量
+
+        // 模拟从后端获取 YOLO 结果 (你需要替换为实际的获取方式)
+        function fetchYOLOResults() {
+            // 实际应用中，你应该使用 fetch 或其他方法从你的 Flask 后端获取数据
+            // 例如:
+            // fetch('/get_yolo_results')
+            //   .then(response => response.json())
+            //   .then(data => {
+            //     yoloResults = data.yolo_results.objects; // 假设你的后端返回的数据结构是这样
+            //     updateDropdown();
+            //   })
+            //   .catch(error => console.error('Error fetching YOLO results:', error));
+
+            // 模拟数据 (用于演示)
+            yoloResults = [
+                { class_name: 'drink', index: 0, confidence: 0.95 },
+                { class_name: 'apple', index: 1, confidence: 0.92 },
+                { class_name: 'bottle', index: 2, confidence: 0.88 },
+                { class_name: 'cup', index: 3, confidence: 0.75 },
+            ];
+            updateDropdown();  //  获取模拟数据后更新下拉列表
+        }
+
+        // 更新下拉列表
+        function updateDropdown() {
+            dropdownMenu.innerHTML = ''; // 清空之前的选项
+            if (yoloResults && yoloResults.length > 0) {
+                yoloResults.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = `${item.class_name} (${item.index})`;
+                    li.setAttribute('data-index', item.index);
+                    dropdownMenu.appendChild(li);
+                });
+                dropdownToggle.textContent = `-- 请选择目标 --`; // 重置为初始文本
+                selectedIndexInput.value = '';
+            } else {
+                dropdownToggle.textContent = '未检测到目标';
+                selectedIndexInput.value = '';
+            }
+            // 重新绑定事件监听器，确保它们在每次更新后都有效
+            bindDropdownEvents();
+        }
+
+        function bindDropdownEvents() {
+            const dropdownItems = dropdownMenu.querySelectorAll('li');
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const selectedIndex = this.getAttribute('data-index');
+                    const selectedText = this.textContent;
+                    dropdownToggle.textContent = selectedText;
+                    selectedIndexInput.value = selectedIndex;
+                    dropdownMenu.classList.remove('open');
+                    console.log(`选择了目标索引: ${selectedIndex}`);
+                    // 在这里，你可以将 selectedIndex 发送回后端，或者执行其他操作
+                });
+            });
+        }
+
+        // 展开/收起下拉菜单
+        dropdownToggle.addEventListener('click', () => {
+            if (yoloResults && yoloResults.length>0)
+              dropdownMenu.classList.toggle('open');
+        });
+
+        // 关闭下拉菜单，如果用户点击在外部
+        document.addEventListener('click', (event) => {
+            if (!yoloDropdown.contains(event.target)) {
+                dropdownMenu.classList.remove('open');
+            }
+        });
+
+        // 初始加载时获取 YOLO 结果 (你需要根据你的实际情况调用这个函数)
+        window.onload = function() {
+            fetchYOLOResults(); //  页面加载完毕后，获取yolo数据。
+        }
+    </script>
+</body>
+</html>

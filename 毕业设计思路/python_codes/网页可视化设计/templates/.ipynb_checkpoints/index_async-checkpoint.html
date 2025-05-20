@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web 界面 (异步)</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            height: 80vh; /* 使用视口高度，占据大部分屏幕 */
+            max-width: 1200px; /* 设置最大宽度以避免过宽 */
+            margin: 20px auto; /* 水平居中并添加一些外边距 */
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden; /* 防止内部元素溢出 */
+        }
+
+        .left-panel {
+            flex: 0 0 50%; /* 占据左边 50% 的宽度，不伸缩 */
+            padding: 15px;
+            border-right: 1px solid #eee;
+            display: flex;
+            justify-content: center; /* 水平居中内容 */
+            align-items: center; /* 垂直居中内容 */
+        }
+
+        .right-panel {
+            flex: 1; /* 占据右边剩余的所有空间，可以伸缩 */
+            display: flex;
+            flex-direction: column; /* 垂直布局 */
+        }
+
+        .right-top {
+            flex: 1; /* 占据右边上方所有可用空间 */
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* 裁剪溢出的 SVG */
+        }
+
+        .right-bottom {
+            flex: 1; /* 占据右边下方所有可用空间 */
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+
+        .yolo-image {
+            display: block;
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain; /* 保持图像比例，适应容器 */
+        }
+
+        .svg-container {
+            width: 95%;
+            height: 95%;
+        }
+
+        .video-player {
+            display: block;
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain; /* 保持视频比例，适应容器 */
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            {% if processed_image_base64 %}
+                <img src="data:image/jpg;base64,{{ processed_image_base64 }}" alt="YOLO Output" class="yolo-image">
+            {% else %}
+                <p class="error-message">YOLO 处理失败: {{ yolo_error }}</p>
+            {% endif %}
+        </div>
+        <div class="right-panel">
+            <div class="right-top svg-container">
+                {{ svg_content | safe }}
+            </div>
+            <div class="right-bottom">
+                <video src="{{ url_for('static', filename=video_file_path.split('/')[-1]) }}" controls loop class="video-player"></video>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

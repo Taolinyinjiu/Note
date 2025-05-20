@@ -1,0 +1,298 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>动态 Web 界面</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            height: 80vh;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .left-panel {
+            flex: 0 0 50%;
+            padding: 15px;
+            border-right: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-top {
+            flex: 1;
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .right-bottom {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+
+        .yolo-image {
+            display: block;
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+        }
+
+        .svg-container {
+            width: 95%;
+            height: 95%;
+        }
+
+        .video-player {
+            display: block;
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+        }
+
+        .placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            {% if yolo_image_data %}
+                <img src="data:image/jpeg;base64,{{ yolo_image_data }}" alt="YOLO Output" class="yolo-image">
+            {% elif yolo_error_data %}
+                <p class="error-message">YOLO 处理失败: {{ yolo_error_data }}</p>
+            {% else %}
+                <p class="placeholder">等待 YOLO 图像...</p>
+            {% endif %}
+        </div>
+        <div class="right-panel">
+            <div class="right-top svg-container">
+                {% if svg_content_data %}
+                    {{ svg_content_data | safe }}
+                {% else %}
+                    <p class="placeholder">等待 SVG 图...</p>
+                {% endif %}
+            </div>
+            <div class="right-bottom">
+                {% if video_path_data %}
+                    <video src="{{ url_for('static', filename=video_path_data.split('/')[-1]) }}" controls loop class="video-player"></video>
+                {% else %}
+                    <p class="placeholder">等待视频路径...</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>智能包装尺寸识别系统</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            /* 将元素（这里是 .container）设置为 flex 容器 */
+            display: flex;
+            /* 子元素将水平排列 */
+            flex-direction: column;
+            /* 设置容器的高度为视口（viewport）高度的 95% */
+            height: 95vh;
+            /* 设置容器的最大宽度为 1200 像素 */
+            max-width: 80vw;
+            /* 设置容器的外边距为 20 像素，水平居中 */
+            margin: 20px auto;
+            /* 设置容器的背景颜色为白色 */
+            background-color: #fff;
+            /* 添加阴影效果，使容器看起来有浮雕效果 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            /* 设置容器的边框圆角半径为 5 像素 */
+            border-radius: 5px;
+            /* 隐藏容器中溢出的内容 */
+            overflow: hidden;
+        }
+
+        .top-panel {
+            display: flex;
+            /* flex: 1; */
+            height: 90%;
+            border-bottom: 1px solid #eee;
+        }
+
+        .left-panel {
+            flex: 0 0 60%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column; /* 改为垂直排列 */
+            justify-content: center; /* 水平居中 */
+            align-items: center;   /* 垂直居中 */
+        }
+
+        .left-panel h1 {
+            margin-bottom: 10px; /* 标题和图像之间留出间距 */
+            text-align: center;   /* 标题内部文字居中 */
+        }
+
+        .right-panel {
+            flex: 0 0 40%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .svg-container,
+        .video-container {
+            display: grid; /* 使用 grid 布局 */
+            place-items: center; /* 简化居中操作 */
+        }
+
+        .svg-container {
+            flex: 0 0 45%;
+            height: 45%;
+            padding: 10px;
+            border-bottom: 2px solid #ddd;
+            display: flex;          /* 添加 flex 布局 */
+            flex-direction: column; /* 垂直排列 */
+        }
+
+        .video-container {
+            flex: 1;
+            height: calc(55% - 12px);
+            padding: 10px;
+            margin-top: 12px;
+            display: flex;          /* 添加 flex 布局 */
+            flex-direction: column; /* 垂直排列 */
+        }
+
+        .svg-container h1,
+        .video-container h1 {
+            margin-bottom: 10px;    /* 标题和内容之间留出间距 */
+            text-align: center;      /* 标题文字居中 */
+        }
+
+        .svg-container p.placeholder,
+        .video-container p.placeholder {
+            display: flex;          /* 让占位符文字也居中 */
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+
+        .yolo-image {
+            display: block;
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+        }
+
+        .video-player {
+            display: block;
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+        }
+
+        .bottom-panel {
+            height: 10%; /* 占据 20% */
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+        }
+
+        .placeholder {
+            color: #999;
+            font-style: italic;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1 style="text-align: center;">智能包装尺寸识别系统</h1>
+        <div class="top-panel">
+            <div class="left-panel">
+                <h3>USB 摄像头输入图像检测框</h3>
+                {% if yolo_image_data %}
+                    <img id="yolo-output" src="data:image/jpeg;base64,{{ yolo_image_data }}" alt="YOLO Output" class="yolo-image">
+                {% elif yolo_error_data %}
+                    <p id="yolo-error" class="error-message">{{ yolo_error_data }}</p>
+                {% else %}
+                    <p class="placeholder">等待图像流</p>
+                {% endif %}
+            </div>
+            <div class="right-panel">
+                <div class="svg-container">
+                    <h3>包装盒刀板尺寸图输出框</h3>
+                    {% if svg_content_data %}
+                        {{ svg_content_data | safe }}
+                    {% else %}
+                        <p class="placeholder">等待检测结果</p>
+                    {% endif %}
+                </div>
+                <div class="video-container">
+                    <h3>打包盒动态示意图</h3>
+                    {% if video_path_data %}
+                        <video src="{{ url_for('static', filename=video_path_data.split('/')[-1]) }}" controls loop class="video-player"></video>
+                    {% else %}
+                        <p class="placeholder">等待检测结果</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="bottom-panel">
+            <p>YOLO 检测参数将在此处显示</p>
+        </div>
+    </div>
+</body>
+</html>

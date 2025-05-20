@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>动态 Web 界面 (WebSocket)</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            height: 80vh;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .left-panel {
+            flex: 0 0 50%;
+            padding: 15px;
+            border-right: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-top {
+            flex: 1;
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .right-bottom {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+
+        .yolo-image {
+            display: block;
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+        }
+
+        .svg-container {
+            width: 95%;
+            height: 95%;
+        }
+
+        .video-player {
+            display: block;
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+        }
+
+        .placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script type="text/javascript">
+        const socket = io('/yolo', { transports: ['websocket'] });
+        const yoloImage = document.getElementById('yolo-output');
+        const yoloError = document.getElementById('yolo-error');
+        const yoloPlaceholder = document.getElementById('yolo-placeholder');
+
+        socket.on('connect', function() {
+            console.log('Connected to /yolo namespace (Socket ID: ' + socket.id + ') using WebSocket');
+            yoloPlaceholder.textContent = 'WebSocket 连接成功，等待图像...';
+        });
+
+        socket.on('yolo_image', function(msg) {
+            yoloImage.src = 'data:image/jpeg;base64,' + msg.image_data;
+            yoloImage.style.display = 'block';
+            yoloError.style.display = 'none';
+            yoloPlaceholder.style.display = 'none';
+        });
+
+        socket.on('yolo_error', function(msg) {
+            yoloError.textContent = 'YOLO 处理失败: ' + msg.error;
+            yoloError.style.display = 'block';
+            yoloImage.style.display = 'none';
+            yoloPlaceholder.style.display = 'none';
+        });
+
+        socket.on('disconnect', function() {
+            console.log('Disconnected from /yolo namespace');
+            yoloPlaceholder.textContent = 'WebSocket 连接断开，请刷新页面。';
+            yoloImage.style.display = 'none';
+            yoloError.style.display = 'none';
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('WebSocket Connection Error:', error);
+            yoloPlaceholder.textContent = 'WebSocket 连接错误，请检查服务器。';
+        });
+
+        socket.on('connect_timeout', (timeout) => {
+            console.error('WebSocket Connection Timeout:', timeout);
+            yoloPlaceholder.textContent = 'WebSocket 连接超时，请检查服务器。';
+        });
+    </script>
+</body>
+</html>

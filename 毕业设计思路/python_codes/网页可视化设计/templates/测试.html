@@ -1,0 +1,33 @@
+<html>
+<head>
+  <style>
+        .dplayer-resolution-box {
+            display: none;
+        }
+
+        .dplayer-resolution:hover .dplayer-resolution-box {
+            display: block;
+            position:absolute;
+            bottom: 100%;
+        }
+        
+        .dplayer-resolution {
+            margin-top: 200px;
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 整个下拉菜单的容器，包含一个显示当前下选择的段落<p>和一个包含下拉选项的容器 <div class="dplayer-resolution-box"> -->
+<div class="dplayer-resolution">
+    <p>最近</p>
+    <div class="dplayer-resolution-box">
+        <div class="dplayer-resolution-item">时间最近</div>
+        <div class="dplayer-resolution-item">评论最多</div>
+        <div class="dplayer-resolution-item">被赞最多</div>
+    </div>
+</div>
+</body>
+
+</html>

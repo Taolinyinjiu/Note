@@ -36,10 +36,6 @@ p1 = -0.001262
 p2 = 0.001061
 k3 = 0.0
 
-# 设置分辨率
-desired_width = 1920
-desired_height = 1080
-
 distortion_coefficients = np.array([k1, k2, p1, p2, k3], dtype=np.float32)
 
 is_paused = False  # 新增变量，用于控制 YOLO 暂停和恢复
@@ -53,8 +49,6 @@ def yolo_detection_thread():
         model = YOLO("F:/GitHub/Note/毕业设计思路/python_codes/yolo_model_weights/best.pt")  # 或者你的模型路径
         cap = cv2.VideoCapture(0)
         # 设置分辨率
-        # cap.set(cv2.CAP_PROP_FRAME_WIDTH, desired_width)
-        # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, desired_height)
 
         if not cap.isOpened():
             print("Error: Could not open camera.")

@@ -1,0 +1,4 @@
+# 关于vscode在消除ros软件包编译时产生的一些小问题
+
+1. 在colcon build后，需要重新启动vscode才能消除相关的waring红线，主要原因在于，vscode的IntelliSense引擎可能是在旧的配置下运行，读取的compile_commands.json并不是重新编译后的，而是之前的，导致存在同步问题。
+2. 解决方案是写一个编译脚本，在编译完成后清除vscode的IntelliSense引擎的缓存文件

@@ -1,0 +1,5 @@
+## Clion安装
+
+首先，Clion在官网下载到的只有一个压缩包而不是.deb文件，这为Clion提供了对不同linux发行版更好的适配性，同时也使得Clion只能通过终端的方式启动。但相应的，从终端中启动的Clion将会获取到当前shell的环境变量。因此如果有的ROS软件包并未在/.bashrc中写入`source devel\setup.bash`，又希望在Clion中进行编辑源文件，则需要在已经设置过环境变量的shell中打开Clion而非在一个独立的shell中打开Clion
+
+关于Clion的安装，只需要在官网下载Clion的压缩包，然后放在一个指定的目录下即可，比如/opt/clion

@@ -76,6 +76,8 @@ Visual Odometry，即视觉里程计。它估计两个时刻机器人的相对�
 > SURF (Speeded-Up Robust Features):使用Hessian矩阵近似（盒式滤波器替代高斯滤波）。
 > ORB (Oriented FAST and Rotated BRIEF):改进的FAST角点检测（添加方向信息）。
 
+
+
 #### 不基于特征
 不使用特征进行VO的方法称为直接法。它直接把图像中所有像素写进一个位姿估计方程，求出帧间相对运动。例如，在RGBD SLAM中，可以用ICP（Iterative Closest Point，迭代最近邻）求解两个点云之间的变换矩阵。对于单目SLAM，我们可以匹配两个图像间的像素，或者像图像与一个全局的模型相匹配。直接法的典型例子是SVO和LSD-SLAM。它们在单目SLAM中使用直接法，取得了较好的效果。目前看来，直接法比特征VO需要更多的计算量，而且对相机的图像采集速率也有较高的要求。
 

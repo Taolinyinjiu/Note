@@ -13,6 +13,7 @@ sudo docker run -dit \
 -w /home/taolin \
 --net=host \
 --gpus all \
+--runtime=nvidia \
 fishros2/ros:noetic-desktop-full
 
 fishros2/ros:noetic-desktop-full
@@ -36,4 +37,34 @@ docker run -dit \
 -e DISPLAY=unix$DISPLAY \
 -w /home/taolin \
 --net=host \
+fishros2/ros:noetic-desktop-full
+
+
+
+// 从ubuntu20创建全新的ros环境
+sudo docker run -dit \
+--name=ros-px4ctrl \
+--privileged  \
+-v /dev:/dev \
+-v /home/taolin:/home/taolin \
+-v /tmp/.X11-unix:/tmp/.X11-unix  \
+-e DISPLAY=unix$DISPLAY \
+-w /home/taolin \
+--net=host \
+--gpus all \
+--runtime=nvidia \
+ubuntu:20.04
+
+// 从fishros的ros-noetic创建环境
+sudo docker run -dit \
+--name=ros-px4ctrl \
+--privileged  \
+-v /dev:/dev \
+-v /home/taolin:/home/taolin \
+-v /tmp/.X11-unix:/tmp/.X11-unix  \
+-e DISPLAY=unix$DISPLAY \
+-w /home/taolin \
+--net=host \
+--gpus all \
+--runtime=nvidia \
 fishros2/ros:noetic-desktop-full

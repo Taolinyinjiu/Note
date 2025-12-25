@@ -2,7 +2,12 @@
 
 打开QGC，提高imu频率，nxtpx4和cuav的都提高，后面录制的时候都录上，确定能否使用nxtpx4的，还是说nxtpx4只是外参难调了一点
 cuav v6x使用这个命令
+```bash
+# 提高imu/data_raw
 mavlink stream -d /dev/ttyACM0 -s HIGHRES_IMU -r 150
+# 提高imu/data
+mavlink stream -d /dev/ttyACM0 -s ATTITUDE_QUATERNION -r 150
+```
 nxtpx4可以直接从mavros提高频率
 ``` bash
 # 启动mavros
@@ -25,3 +30,10 @@ roslaunch realsense2_camera rs_camera.launch
 rosbag record -o name /cuav/mavros/imu/data_raw /camera/infra1/image_rect_raw /camera/infra2/image_rect_raw 
 ```
 
+
+
+mavlink stream -d /dev/ttyACM0 -s HIGHRES_IMU -r 150
+
+
+
+如何通过同样的方式提高mavros/imu/data的频率呢

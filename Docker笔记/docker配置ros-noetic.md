@@ -68,3 +68,16 @@ sudo docker run -dit \
 --gpus all \
 --runtime=nvidia \
 fishros2/ros:noetic-desktop-full
+
+
+
+sudo docker run -dit \
+--name=mini-viobot \
+--privileged  \
+-v /dev:/dev \
+-v /home/taolin:/home/taolin \
+-v /tmp/.X11-unix:/tmp/.X11-unix  \
+-e DISPLAY=unix$DISPLAY \
+-w /home/taolin \
+--net=host \
+fishros2/ros:humble-desktop-full

@@ -46,3 +46,42 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 - `fastrtps`:eProsima Fast DDS 库的核心库。
 - `fastddsgen`:一个使用 IDL 文件中定义的数据类型生成源代码的 Java 应用程序。
 
+### Run an application
+
+当在编译一个使用了FastDDS的应用时，需要链接FastDDS的动态库(.so)，需要使用的命令为:
+```bash
+export LD_LIBRARY_PATH=/usr/local/lib/
+```
+但值得注意的是，这个命令会对使用其他动态库的软件造成一定的影响，比如ros，因此如果需要持久化的话，可以选择下面的命令，该命令使用的是追加而不是覆盖的方式。
+```bash
+echo 'export LD_LIBRARY_PATH=/usr/local/lib/ :$LD_LIBRARY_PATH' >> ~/.bashrc
+```
+
+### Including FastDDS in a CMake Project
+安装程序会部署 CMake 配置文件，通过 CMake 的 find_package API，可以简化将 Fast-DDS 集成到任何 CMake 项目的过程。
+
+通过设置 CMake 变量 BUILD_SHARED_LIBS，可以在 CMake 的生成阶段（generator stage）选择所需的链接方式（动态库或静态库）。
+
+如果未设置该变量，构建过程将默认采用静态链接。
+
+```bahs
+cmake -Bbuildexample -DBUILD_SHARED_LIBS=ON .
+cmake --build buildexample --target install
+```
+
+### FastDDS CLI(Optional)
+Fast DDS CLI（命令行界面）是一个提供了一系列命令和子命令的工具，用于执行与 Fast DDS 相关的维护和配置任务。
+
+作为一个可选工具，它的依赖项在默认情况下是不会被安装的。不过，你可以通过运行以下命令来安装这些依赖项：
+```bash
+sudo apt-get install python3 python3-pip
+pip3 install xmlschema
+```
+
+### Uninstall
+
+卸载FastDDS的方式也很简单，执行安装包中的uninstall.sh文件就行
+```bash
+cd <extraction_directory>
+sudo ./uninstall.sh
+```

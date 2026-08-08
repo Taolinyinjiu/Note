@@ -81,3 +81,14 @@ sudo docker run -dit \
 -w /home/taolin \
 --net=host \
 fishros2/ros:humble-desktop-full
+
+
+
+
+
+
+
+```bash
+sudo docker run -dit \ 
+--name ubuntu22 \                                                                                                                 --privileged \                                                                                                                   --net=host \                                                                                                                     -v /dev:/dev \                                                                                                                   -v /home/taolin:/home/taolin \                                                                                                   -v /tmp/.X11-unix:/tmp/.X11-unix \                                                                                               -v $HOME/.Xauthority:/root/.Xauthority:ro \                                                                                       -e DISPLAY=$DISPLAY \                                                                                                             -e XAUTHORITY=/root/.Xauthority \                                                                                                 -w /home/taolin \                                                                                                             	ubuntu:22.04
+```
